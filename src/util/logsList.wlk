@@ -1,9 +1,3 @@
-// src/util/logsList.wlk
-// src/util/logsList.wlk
-// src/util/logsList.wlk
-// src/util/logsList.wlk
-// src/util/logsList.wlk
-// src/util/logsList.wlk
 import src.model.Log.Log
 
 object logsList {

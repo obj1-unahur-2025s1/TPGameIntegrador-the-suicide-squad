@@ -1,8 +1,3 @@
-import src.ui.components.startButton.*
-import src.ui.screens.gameStartScreen.*
-import src.ui.screens.gameOverScreen.*
-import src.ui.components.restartButton.*
-import src.ui.screens.gameWonScreen.*
 import src.config.setup.*
 import src.util.logsList.*
 import src.config.stateConfig.*
