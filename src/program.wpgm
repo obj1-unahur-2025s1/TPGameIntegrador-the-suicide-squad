@@ -1,0 +1,8 @@
+import wollok.game.*
+import src.config.appConfig.*
+import src.config.setup.*
+
+program FroggerGame {
+  setup.main()
+  game.start()
+}
