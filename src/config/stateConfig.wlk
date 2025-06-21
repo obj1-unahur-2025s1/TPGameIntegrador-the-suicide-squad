@@ -1,5 +1,5 @@
 object stateConfig {
-  var gameInProgress = false
+  var gameInProgress = true
   var property isGameOverScreen = false
   var property isStartScreen = false
   
@@ -9,12 +9,6 @@ object stateConfig {
     gameInProgress = true
     isGameOverScreen = false
     isStartScreen = false
-  }
-  
-  method setIsStartScreenTrue() {
-    gameInProgress = false
-    isGameOverScreen = false
-    isStartScreen = true
   }
   
   method setIsGameOverScreenTrue() {

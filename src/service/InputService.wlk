@@ -24,13 +24,4 @@ class InputService {
         } }
     )
   }
-  
-  method bindStartButton(caller) {
-    keyboard.any().onPressDo(
-      { if (stateConfig.isStartScreen()) {
-          logger.message("Starting game")
-          caller.roundSetup()
-        } }
-    )
-  }
 }

@@ -1,7 +1,7 @@
 object appConfig {
-  const width = 10
-  const height = 10
-  const cellSize = 50
+  const width = 20
+  const height = 9
+  const cellSize = 80
   var currentTitle = "Frogger: Cross the river"
   
   method initialize(gameInstance) {
@@ -9,10 +9,23 @@ object appConfig {
     gameInstance.height(height)
     gameInstance.cellSize(cellSize)
     self.setTitle(currentTitle)
+    gameInstance.boardGround("bg-river.png")
   }
   
   method setTitle(title) {
     currentTitle = title
     game.title(title)
   }
+  
+  method width() = width
+  
+  method height() = height
+  
+  method cellSize() = cellSize
+  
+  method initXPosition() = width / 2
+  
+  method initYPosition() = height - 1
+  
+  method middleXPosition() = width / 2
 }

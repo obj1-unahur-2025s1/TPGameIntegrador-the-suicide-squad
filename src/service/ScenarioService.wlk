@@ -7,6 +7,7 @@ import src.config.setup.*
 import src.util.logsList.*
 import src.config.stateConfig.*
 import src.util.Logger.*
+import wollok.game.*
 
 class ScenarioService {
   const logger = new Logger(callerName = "ScenarioService")
@@ -29,28 +30,7 @@ class ScenarioService {
   method setUpRoundScenario(frog) {
     logger.message("Setting up game scenario")
     self.removeAllVisuals()
-    game.addVisual(frog)
     self.addLogs()
-  }
-  
-  method setupGameWonScenario() {
-    logger.message("Setting up game won scenario")
-    self.removeAllVisuals()
-    game.addVisual(gameWonScreen)
-    game.addVisual(restartButton)
-  }
-  
-  method setupGameOverScenario() {
-    logger.message("Setting up game over scenario")
-    self.removeAllVisuals()
-    game.addVisual(gameOverScreen)
-    game.addVisual(restartButton)
-  }
-  
-  method setupGameStartScreen() {
-    logger.message("Showing game start screen")
-    self.removeAllVisuals()
-    game.addVisual(gameStartScreen)
-    game.addVisual(startButton)
+    game.addVisual(frog)
   }
 }

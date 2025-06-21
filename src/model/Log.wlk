@@ -3,10 +3,10 @@ import wollok.game.*
 class Log {
   const startX = 0
   const row = 0
-  const property speed = null
+  const property speed = 1
   var property position = game.at(startX, row)
   
-  method image() = "log.png"
+  method image() = "log1.png"
   
   method resetPosition() {
     position = game.at(startX, row)

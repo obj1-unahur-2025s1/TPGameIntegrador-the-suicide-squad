@@ -1,3 +1,12 @@
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
 import src.service.ScenarioService.*
 import src.util.Logger.*
 import src.ui.screens.gameWonScreen.*
@@ -7,12 +16,16 @@ import src.ui.components.startButton.*
 import src.ui.screens.gameStartScreen.*
 import src.util.logsList.*
 import src.config.stateConfig.*
+import src.config.appConfig.*
 import src.service.InputService.*
 import src.service.TickService.*
 import src.model.Frog.*
 
 class GameService {
-  const frog = new Frog(startX = 5, startY = 9)
+  const frog = new Frog(
+    startX = appConfig.initXPosition(),
+    startY = appConfig.initYPosition()
+  )
   const tickService = new TickService()
   const inputService = new InputService()
   const scenarioService = new ScenarioService()
@@ -23,19 +36,14 @@ class GameService {
   method mainSetup() {
     inputService.bindControls(self, frog)
     inputService.bindRestartButton(self)
-    inputService.bindStartButton(self)
-    self.gameSetup()
-    keyboard.n().onPressDo({ logger.message("Tecla UP presionada") })
-  }
-  
-  method gameSetup() {
-    self.showGameStartScreen()
+    self.roundSetup()
   }
   
   method roundSetup() {
     stateConfig.startRound()
     scenarioService.setUpRoundScenario(frog)
     tickService.setupTicks(self)
+    game.say(frog, "Usa las flechas para jugar")
   }
   
   method tryMoveFrogTo(newPosition) {
@@ -43,38 +51,15 @@ class GameService {
     if (stateConfig.isInProgress()) frog.moveTo(newPosition)
   }
   
-  method onFrogWin() {
-    game.say(frog, "Safe!")
-    self.gameWon()
-  }
-  
-  method onFrogDrown() {
-    game.say(frog, "The frog drowned!")
-    self.gameOver()
-  }
-  
   method gameWon() {
     tickService.stopTicks()
-    game.schedule(2000, { self.showGameWonScreen() })
+    game.say(frog, "Ganaste! Pulsa una tecla para reiniciar")
+    stateConfig.setIsGameOverScreenTrue()
   }
   
   method gameOver() {
     tickService.stopTicks()
-    game.schedule(2000, { self.showGameOverScreen() })
-  }
-  
-  method showGameStartScreen() {
-    scenarioService.setupGameStartScreen()
-    stateConfig.setIsStartScreenTrue()
-  }
-  
-  method showGameOverScreen() {
-    scenarioService.setupGameOverScenario()
-    stateConfig.setIsGameOverScreenTrue()
-  }
-  
-  method showGameWonScreen() {
-    scenarioService.setupGameWonScenario()
+    game.say(frog, "Perdiste! Pulsa una tecla para reiniciar")
     stateConfig.setIsGameOverScreenTrue()
   }
   
@@ -94,7 +79,7 @@ class GameService {
             self.gameOver()
           } else {
             const newFrogX = frog.calculateNextFrogX(log.speed())
-            if ((newFrogX < 0) || (newFrogX >= game.width())) self.gameOver()
+            if (frog.isOutOfBounds(log.speed())) self.gameOver()
             else frog.moveTo(game.at(newFrogX, frog.position().y()))
           }
         }
@@ -103,10 +88,10 @@ class GameService {
   }
   
   method handleCheckFrog() {
-    if (frog.position().y() == 0) {
+    if (frog.reachedGoal()) {
       self.gameWon()
     } else {
-      if ((frog.position().y() > 0) && (frog.position().y() < 9))
+      if ((frog.position().y() > 0) && (frog.position().y() < appConfig.initYPosition()))
         self.handleDangerZone()
     }
   }

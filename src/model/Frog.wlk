@@ -7,9 +7,8 @@ class Frog {
   var property position = game.at(startX, startY)
   var property alive = true
   
-  method image() = "frog.png"
+  method image() = "frog3.png"
   
-  //moveto
   method moveTo(pos) {
     if (self.canMoveTo(pos)) {
       position = pos
@@ -28,12 +27,11 @@ class Frog {
     pos
   ) = (((pos.x() >= 0) && (pos.x() < game.width())) && (pos.y() >= 0)) && (pos.y() < game.height())
   
-  //p
-  method frogIsOutOfBounds(logSpeed) = (self.calculateNextFrogX(
+  method isOutOfBounds(logSpeed) = (self.calculateNextFrogX(
     logSpeed
   ) < 0) || (self.calculateNextFrogX(logSpeed) >= game.width())
   
   method calculateNextFrogX(logSpeed) = self.position().x() + logSpeed
   
-  method frogReachedGoal(frog) = frog.position().y() == 0
+  method reachedGoal() = position.y() == 0
 }
