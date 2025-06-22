@@ -1,3 +1,4 @@
+import src.config.stateConfig.*
 import src.util.Logger.*
 import wollok.game.*
 
@@ -6,13 +7,23 @@ class TickService {
   
   method setupTicks(caller) {
     logger.message("Setting up ticks")
-    game.onTick(350, "moveLogs", { caller.handleMoveLogs() })
-    game.onTick(150, "checkFrog", { caller.handleCheckFrog() })
+    stateConfig.moveLogsTick(game.tick(350, { caller.handleMoveLogs() }, true))
+    stateConfig.checkFrogTick(
+      game.tick(150, { caller.handleCheckFrog() }, true)
+    )
+  }
+  
+  method playTicks() {
+    logger.message("Playing ticks")
+    stateConfig.moveLogsTick().start()
+    stateConfig.checkFrogTick().start()
   }
   
   method stopTicks() {
     logger.message("Stopping ticks")
-    game.removeTickEvent("moveLogs")
-    game.removeTickEvent("checkFrog")
+    stateConfig.moveLogsTick().stop()
+    stateConfig.checkFrogTick().stop()
   }
+  
+  method areTicksRunning() = ((stateConfig.moveLogsTick() != null) && stateConfig.moveLogsTick().isRunning()) && ((stateConfig.checkFrogTick() != null) && stateConfig.checkFrogTick().isRunning())
 }

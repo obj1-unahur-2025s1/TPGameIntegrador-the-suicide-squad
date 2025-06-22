@@ -1,15 +1,25 @@
+import src.config.stateConfig.*
+
 object appConfig {
   const width = 20
   const height = 9
   const cellSize = 80
   var currentTitle = "Frogger: Cross the river"
   
-  method initialize(gameInstance) {
-    gameInstance.width(width)
-    gameInstance.height(height)
-    gameInstance.cellSize(cellSize)
+  method initialize() {
+    game.width(width)
+    game.height(height)
+    game.cellSize(cellSize)
     self.setTitle(currentTitle)
-    gameInstance.boardGround("bg-river.png")
+    game.boardGround("bg-river.png")
+    self.initializeRiver()
+  }
+  
+  method initializeRiver() {
+    const river = game.sound("river-sound.mp3")
+    river.shouldLoop(true)
+    river.play()
+    stateConfig.river(river)
   }
   
   method setTitle(title) {

@@ -21,20 +21,27 @@ class GameService {
   
   method mainSetup() {
     inputService.bindControls(self, frog)
+    inputService.bindCommonProcessRestart(self)
     inputService.bindRestartButton(self)
+    tickService.setupTicks(self)
+    appConfig.initializeRiver()
     self.roundSetup()
   }
   
   method roundSetup() {
     stateConfig.startRound()
     scenarioService.setUpRoundScenario(frog)
-    tickService.setupTicks(self)
+    tickService.playTicks()
     game.say(frog, "Usa las flechas para jugar")
   }
   
   method tryMoveFrogTo(newPosition) {
-    logger.message("Trying to move frog to " + newPosition)
     if (stateConfig.isInProgress()) frog.moveTo(newPosition)
+  }
+  
+  method restartCommonProcessIfNeeded() {
+    if (stateConfig.isInProgress() && (!tickService.areTicksRunning()))
+      tickService.playTicks()
   }
   
   method gameWon() {

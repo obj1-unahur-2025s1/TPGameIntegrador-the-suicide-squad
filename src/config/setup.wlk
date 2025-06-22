@@ -6,7 +6,7 @@ object setup {
   const gameService = new GameService()
   
   method main() {
-    appConfig.initialize(game)
+    appConfig.initialize()
     gameService.mainSetup()
   }
 }

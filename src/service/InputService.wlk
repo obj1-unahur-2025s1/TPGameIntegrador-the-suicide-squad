@@ -1,9 +1,6 @@
-import src.util.Logger.*
 import src.config.stateConfig.*
 
 class InputService {
-  const logger = new Logger(callerName = "InputService")
-  
   method bindControls(caller, frog) {
     keyboard.up().onPressDo({ caller.tryMoveFrogTo(frog.position().up(2)) })
     
@@ -16,12 +13,13 @@ class InputService {
     )
   }
   
+  method bindCommonProcessRestart(caller) {
+    keyboard.any().onPressDo({ caller.restartCommonProcessIfNeeded() })
+  }
+  
   method bindRestartButton(caller) {
     keyboard.any().onPressDo(
-      { if (stateConfig.isGameOverScreen()) {
-          logger.message("Restarting game")
-          caller.resetGame()
-        } }
+      { if (stateConfig.isGameOverScreen()) caller.resetGame() }
     )
   }
 }

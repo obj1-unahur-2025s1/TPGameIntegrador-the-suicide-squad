@@ -8,12 +8,13 @@ class ScenarioService {
   const logger = new Logger(callerName = "ScenarioService")
   
   method removeAllVisuals() {
+    logger.message("Removing all visuals from the game")
     const allVisuals = game.allVisuals()
     allVisuals.forEach({ visual => game.removeVisual(visual) })
-    logger.message("All visuals removed")
   }
   
   method addLogs() {
+    logger.message("Adding logs to the game")
     logsList.logs().forEach(
       { log =>
         log.resetPosition()
