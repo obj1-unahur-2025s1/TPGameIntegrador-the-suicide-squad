@@ -13,27 +13,31 @@ import src.model.LogShort.LogShort
 class GameService {
   const stages = []
   var property actualStageIndex = 0
+  var property waitingForNextLevel = false
+  const tickService = new TickService()
+  const inputService = new InputService()
+  const scenarioService = new ScenarioService()
+  const logger = new Logger(callerName = "GameService")
+  const frog = new Frog(
+    startX = appConfig.initXPosition(),
+    startY = appConfig.initYPosition()
+  )
+
+  method frog() = frog
 
   method actualStage() = stages.get(actualStageIndex)
+  method isWaitingForNextLevel() = waitingForNextLevel
+  method stopWaitingForNextLevel() { waitingForNextLevel = false }
+  method startWaitingForNextLevel() { waitingForNextLevel = true }
 
   method addStage(newStage) {
     stages.add(newStage)
   }
 
-  const frog = new Frog(
-    startX = appConfig.initXPosition(),
-    startY = appConfig.initYPosition()
-  )
-  const tickService = new TickService()
-  const inputService = new InputService()
-  const scenarioService = new ScenarioService()
-  const logger = new Logger(callerName = "GameService")
-
-  method frog() = frog
-
   method showMenu() {
     scenarioService.removeAllVisuals()
     game.boardGround("menuScreen.png")
+
     keyboard.space().onPressDo({
       if (stateConfig.isInMenu()) {
         self.startGame()
@@ -114,14 +118,15 @@ class GameService {
     ))
   }
 
-  method roundFirstSetup() {
-    game.boardGround(self.actualStage().bg())
-    logsList.addLogs(self.actualStage().logList())
-    stateConfig.startRound()
-    scenarioService.setUpRoundScenario(frog)
-    tickService.playTicks()
-    game.say(frog, "Usa las flechas para jugar")
-  }
+method roundFirstSetup() {
+  game.boardGround(self.actualStage().bg())
+  logsList.addLogs(self.actualStage().logList())
+  stateConfig.startRound()
+  scenarioService.setUpRoundScenario(frog)
+  tickService.playTicks()
+  game.say(frog, "Usa las flechas para jugar")
+}
+
 
   method tryMoveFrogTo(newPosition) {
     if (stateConfig.isInProgress())
@@ -137,8 +142,7 @@ class GameService {
     tickService.stopTicks()
     stateConfig.setIsGameOverScreenTrue()
     scenarioService.removeAllVisuals()
-    game.boardGround("gameWon.png")
-    game.say(frog, "¡Ganaste los 3 niveles!")
+    game.boardGround("gameWon.png") // cambiar img
   }
 
   method gameOver() {
@@ -178,7 +182,15 @@ method resetGame() {
 
 method handleCheckFrog() {
   if (frog.reachedGoal()) {
-    self.nextLevel()
+    tickService.stopTicks()
+    scenarioService.removeAllVisuals()
+
+    if (actualStageIndex + 1 < stages.size()) {
+      game.boardGround("nextLevel.png") // cambiar img (es igual para todos los niveles)
+      self.startWaitingForNextLevel()
+    } else {
+      self.gameWon()
+    }
   } else {
     if (actualStageIndex == 2) { // Solo en nivel 3
       if ((frog.position().y() > 0) && (frog.position().y() < appConfig.initYPosition()) && frog.position().y() != 4)
@@ -189,6 +201,8 @@ method handleCheckFrog() {
     }
   }
 }
+
+
 
 
   method handleDangerZone() {
@@ -202,30 +216,19 @@ method handleCheckFrog() {
     tickService.playTicks()
   }
 
-//  method continueToNextLevel() {
-//  waitingForNextLevel = false
-//  frog.resetPosition()
-//  game.boardGround(self.actualStage().bg())
-//  logsList.addLogs(self.actualStage().logList())
-//  self.config()
-//}
-
-
-  method nextLevel() {
-    actualStageIndex += 1
-    if (actualStageIndex < stages.size()) {
-      frog.resetPosition()
-      scenarioService.removeAllVisuals()
-      //game.boardGround("levelComplete.png")
-      //waitingForNextLevel = true
-      //tickService.stopTicks()
-      game.boardGround(self.actualStage().bg())
-      logsList.addLogs(self.actualStage().logList())
-      self.config()
-    } else {
-      self.gameWon()
-    }
+method nextLevel() {
+  actualStageIndex += 1
+  if (actualStageIndex < stages.size()) {
+    frog.resetPosition()
+    scenarioService.removeAllVisuals()
+    game.boardGround(self.actualStage().bg())
+    logsList.addLogs(self.actualStage().logList())
+    self.config()
+  } else {
+    self.gameWon()
   }
+}
+
 }
 
 class Stage {

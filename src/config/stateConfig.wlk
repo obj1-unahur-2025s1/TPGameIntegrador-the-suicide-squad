@@ -5,10 +5,11 @@ object stateConfig {
   var property river = null
   var property moveLogsTick = null
   var property checkFrogTick = null
-  var property isInMenu = true  // Nuevo estado para menú
+  var property isInMenu = true  // Estado inicial
 
   method isInProgress() = gameInProgress
   method isInMenu() = isInMenu
+  method isGameOverScreen() = isGameOverScreen
 
   method startRound() {
     gameInProgress = true
