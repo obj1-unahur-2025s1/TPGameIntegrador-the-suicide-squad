@@ -15,6 +15,7 @@ class ScenarioService {
   
   method addLogs() {
     logger.message("Adding logs to the game")
+
     logsList.logs().forEach(
       { log =>
         log.resetPosition()

@@ -11,6 +11,9 @@ class InputService {
     keyboard.right().onPressDo(
       { caller.tryMoveFrogTo(frog.position().right(1)) }
     )
+//    keyboard.space().onPressDo(
+//    { if (caller.waitingForNextLevel) caller.continueToNextLevel() }
+//  )
   }
   
   method bindCommonProcessRestart(caller) {
@@ -18,8 +21,9 @@ class InputService {
   }
   
   method bindRestartButton(caller) {
-    keyboard.any().onPressDo(
+    keyboard.r().onPressDo(
       { if (stateConfig.isGameOverScreen()) caller.resetGame() }
     )
   }
+
 }

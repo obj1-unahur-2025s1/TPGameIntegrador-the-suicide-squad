@@ -11,7 +11,6 @@ object appConfig {
     game.height(height)
     game.cellSize(cellSize)
     self.setTitle(currentTitle)
-    game.boardGround("bg-river.png")
     self.initializeRiver()
   }
   
@@ -38,4 +37,13 @@ object appConfig {
   method initYPosition() = height - 1
   
   method middleXPosition() = width / 2
+
+method addExtraRiver() {
+  // Lógica para un segundo río
+}
+
+method addObstacles() {
+  // Lógica para troncos, enemigos, etc.
+}
+
 }
