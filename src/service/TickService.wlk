@@ -1,29 +1,55 @@
-import src.config.stateConfig.*
-import src.util.Logger.*
 import wollok.game.*
+import src.model.TickBinding.*
+import src.utils.constants.*
 
+/**
+ * Service that manages the game ticks for periodic actions,
+ * such as checking the frog's state and moving logs.
+ */
 class TickService {
-  const logger = new Logger(callerName = "TickService")
-  
-  method setupTicks(caller) {
-    logger.message("Setting up ticks")
-    stateConfig.moveLogsTick(game.tick(350, { caller.handleMoveLogs() }, true))
-    stateConfig.checkFrogTick(
-      game.tick(150, { caller.handleCheckFrog() }, true)
+  const bindings = []
+
+  /**
+   * Sets up the ticks for frog checking and log movement using provided handlers.
+   * 
+   * @param handleCheckFrog The action to check the frog's state.
+   * @param handleMoveLogs The action to move the logs.
+   */
+  method setupTicks(handleCheckFrog, handleMoveLogs) {
+    bindings.addAll(
+      [
+        new TickBinding(
+          interval = constants.checkFrogTickInterval(),
+          action = { handleCheckFrog }
+        ),
+        new TickBinding(
+          interval = constants.moveLogsTickInterval(),
+          action = { handleMoveLogs }
+        )
+      ]
     )
+
+    bindings.forEach({ element => element.bind() })
   }
-  
+
+  /**
+   * Starts all bound ticks.
+   */
   method playTicks() {
-    logger.message("Playing ticks")
-    stateConfig.moveLogsTick().start()
-    stateConfig.checkFrogTick().start()
+    bindings.forEach({ element => element.start() })
   }
-  
+
+  /**
+   * Stops all bound ticks.
+   */
   method stopTicks() {
-    logger.message("Stopping ticks")
-    stateConfig.moveLogsTick().stop()
-    stateConfig.checkFrogTick().stop()
+    bindings.forEach({ element => element.stop() })
   }
-  
-  method areTicksRunning() = ((stateConfig.moveLogsTick() != null) && stateConfig.moveLogsTick().isRunning()) && ((stateConfig.checkFrogTick() != null) && stateConfig.checkFrogTick().isRunning())
+
+  /**
+   * Checks if all ticks are currently running.
+   * 
+   * @return true if all ticks are running; false otherwise.
+   */
+  method areTicksRunning() = bindings.all({ element => element.isRunning() })
 }

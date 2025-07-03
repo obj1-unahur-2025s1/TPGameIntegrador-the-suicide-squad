@@ -1,37 +1,52 @@
 import wollok.game.*
-import src.config.stateConfig.stateConfig
+import src.utils.constants.*
 
+/**
+* Represents the player-controlled frog in the game.
+* Tracks position, movement, and state (e.g., alive or at goal).
+*/
 class Frog {
   const startX = 0
   const startY = 0
   var property position = game.at(startX, startY)
-  var property alive = true
+  var property alive = true 
+
+  /**
+  * Determines if the frog's next horizontal move would take it out of the game bounds.
+  * 
+  * @param logSpeed The speed of the log the frog is on.
+  * @return true if the next position is out of bounds; false otherwise.
+  */
+  method isOutOfBounds(logSpeed) = (self.nextXPosition(
+    logSpeed
+  ) < 0) || (self.nextXPosition(logSpeed) >= game.width())
   
-  method image() = "frog3.png"
+  /**
+  * Returns the image used to represent the frog.
+  * 
+  * @return The frog image path or identifier.
+  */
+  method image() = constants.frogImage()
   
-  method moveTo(pos) {
-    if (self.canMoveTo(pos)) {
-      position = pos
-    }
-  }
-  
+  /**
+  * Resets the frog's position to its initial coordinates.
+  */
   method resetPosition() {
     position = game.at(startX, startY)
   }
   
-  method canMoveTo(
-    pos
-  ) = stateConfig.isInProgress() && self.isPositionWithinBounds(pos)
-  
-  method isPositionWithinBounds(
-    pos
-  ) = (((pos.x() >= 0) && (pos.x() < game.width())) && (pos.y() >= 0)) && (pos.y() < game.height())
-  
-  method isOutOfBounds(logSpeed) = (self.calculateNextFrogX(
-    logSpeed
-  ) < 0) || (self.calculateNextFrogX(logSpeed) >= game.width())
-  
-  method calculateNextFrogX(logSpeed) = self.position().x() + logSpeed
-  
+  /**
+  * Checks whether the frog has reached the goal line (bottom of the screen).
+  * 
+  * @return true if the frog is on the bottom row; false otherwise.
+  */
   method reachedGoal() = position.y() == 0
+  
+  /**
+  * Calculates the frog's next X position based on log speed.
+  * 
+  * @param logSpeed The speed of the log the frog is on.
+  * @return The next X coordinate of the frog.
+  */
+  method nextXPosition(logSpeed) = position.x() + logSpeed
 }

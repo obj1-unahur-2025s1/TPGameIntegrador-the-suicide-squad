@@ -1,15 +1,19 @@
+/**
+* Abstract class representing a moving log in the game.
+* Handles positioning, movement, and reset behavior when reaching screen edges.
+*/
 class AbsLog {
   const startX = 0
   const row = 0
   const property speed = 1
   var property position = game.at(startX, row)
   
-  method image()
-  
-  method resetPosition() {
-    position = game.at(startX, row)
-  }
-  
+  /**
+  * Moves the log horizontally according to its speed.
+  * If it goes off the screen, its position is reset to the opposite side.
+  * 
+  * @return true if the log was reset to the opposite side; false otherwise.
+  */
   method moveAndCheckReset() {
     var newX = position.x() + speed
     var didReset = false
@@ -28,5 +32,23 @@ class AbsLog {
     return didReset
   }
   
+  /**
+  * Resets the log position to its starting X coordinate on the same row.
+  */
+  method resetPosition() {
+    position = game.at(startX, row)
+  }
+  
+  /**
+  * Returns the image of the log.
+  * This method is abstract and should be implemented by subclasses.
+  */
+  method image()
+  
+  /**
+  * Returns the current position of the log.
+  * 
+  * @return The current game position of the log.
+  */
   method position() = position
 }

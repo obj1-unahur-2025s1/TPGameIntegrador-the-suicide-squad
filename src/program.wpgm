@@ -1,8 +1,12 @@
+// src/program.wpgm
 import wollok.game.*
-import src.config.appConfig.*
 import src.config.setup.*
 
+/**
+ * Main program entry point for the Frogger game.
+ * It initializes the setup and starts the game loop.
+ */
 program FroggerGame {
-  setup.main()
+  setup.initialize()
   game.start()
 }
