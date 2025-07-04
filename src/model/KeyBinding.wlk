@@ -1,16 +1,16 @@
-/**
-* Represents a key binding that links a key press to an action,
-* optionally conditioned on a boolean flag.
-*/
+import src.utils.Logger.*
+
 class KeyBinding {
   const key
   const action
-  const condition = true 
+  const logger = new Logger(name = "KeyBinding")
   
-  /**
-  * Binds the action to the key press, executing it only if the condition is true.
-  */
   method bind() {
-    key.onPressDo({ if (condition) action.apply() })
+    key.onPressDo(
+      { 
+        // logger.print(("Key " + key.keyCodes()) + " pressed.")
+         action.apply()
+      }
+    )
   }
 }

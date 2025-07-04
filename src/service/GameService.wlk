@@ -1,4 +1,21 @@
-import src.service.LevelService.*
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+// src/service/GameService.wlk
+import src.utils.Logger.*
 import src.service.ScenarioService.*
 import src.service.FrogService.*
 import src.config.StateManager.*
@@ -6,121 +23,147 @@ import src.model.Frog.*
 import src.service.InputService.*
 import src.service.TickService.*
 
-/**
- * Main service that manages the game lifecycle, including initialization,
- * rounds, game state, player input, and interactions between entities.
- */
 class GameService {
   const stateManager = new StateManager()
   const tickService = new TickService()
-  const inputService = new InputService(stateManager = stateManager)
-
-  const frog = new Frog(
-    startX = stateManager.frogInitXPosition(),
-    startY = stateManager.frogInitYPosition()
-  )
-
-  const frogService = new FrogService(stateManager = stateManager, frog = frog)
+  const inputService = new InputService()
+  const frogService = new FrogService(stateManager = stateManager)
   const scenarioService = new ScenarioService(stateManager = stateManager)
-  const levelService = new LevelService(stateManager = stateManager)
-
-  /**
-   * Initializes the game by binding input controls, setting up ticks,
-   * initializing scenario, and setting up the first round.
-   */
+  const logger = new Logger(name = "GameService")
+  const frog = frogService.frog()
+  
   method initialize() {
-    inputService.bindControls(self, frog)
+    inputService.bindControls(
+      { self.startGame() },
+      { self.resetGame() },
+      { self.pauseGame() },
+      { self.resumeGame() },
+      { frogService.moveUp() },
+      { frogService.moveDown() },
+      { frogService.moveLeft() },
+      { frogService.moveRight() }
+    )
+    
     tickService.setupTicks(
       { self.handleCheckFrog() },
       { self.handleMoveLogs() }
     )
-    scenarioService.initialize()
-    self.roundSetup()
+    self.manualInitialize()
   }
-
-  /**
-   * Sets up a new round by starting the game, rendering the stage,
-   * and playing the game ticks.
-   */
-  method roundSetup() {
-    stateManager.startRound()
-    scenarioService.renderStage(frog)
-    tickService.playTicks()
+  
+  method manualInitialize() {
+    scenarioService.manualInitialize()
+    logger.print("Initialized.")
   }
-
-  /**
-   * Handles the situation when the player wins the game.
-   * Stops ticks, sets game over screen, handles level progression,
-   * and schedules the next round.
-   */
-  method gameWon() {
-    tickService.stopTicks()
-    stateManager.setGameOverScreen()
-
-    if (levelService.currentLevel() < levelService.maxLevel()) {
-      self.wonAndNextLevel()
-    } else {
-      levelService.resetLevel()
-      scenarioService.showGameWonMessage(frog)
-    }
-
-    game.schedule(1000, { self.roundSetup() })
-  }
-
-  /**
-   * Shows a partial win message and advances to the next level.
-   */
-  method wonAndNextLevel() {
-    scenarioService.partiallyWonMessage(frog)
-    levelService.nextLevel()
-  }
-
-  /**
-   * Handles the game over state, stopping ticks, showing game over message,
-   * and scheduling a new round.
-   */
-  method gameOver() {
-    tickService.stopTicks()
-    stateManager.setGameOverScreen()
-    scenarioService.showGameOverMessage(frog)
-    game.schedule(1000, { self.roundSetup() })
-  }
-
-  /**
-   * Attempts to move the frog to a new position if the game is in progress.
-   * 
-   * @param newPosition The new position to move the frog to.
-   */
-  method tryMoveFrogTo(newPosition) {
-    if (stateManager.gameInProgress()) frogService.moveTo(newPosition)
-  }
-
-  /**
-   * Handles the movement logic of logs during the game ticks.
-   */
-  method handleMoveLogs() {
-    scenarioService.handleMoveLogs(self, frog)
-  }
-
-  /**
-   * Checks the current status of the frog to determine if the player won
-   * or lost, triggering the appropriate game state changes.
-   */
-  method handleCheckFrog() {
-    if (frogService.didFrogReachGoal()) {
-      self.gameWon()
-    } else {
-      if (frogService.isDangerZone() && (!frogService.isInLog()))
-        self.gameOver()
-    }
-  }
-
-  /**
-   * Restarts the common game process (ticks) if the game is in progress
-   * and the ticks are not currently running.
-   */
-  method restartCommonProcessIfNeeded() {
-    if (stateManager.gameInProgress() && (!tickService.areTicksRunning()))
+  
+  method startGame() {
+    logger.print("startGame called.")
+    if (stateManager.isStartScreen()) {
+      stateManager.startGame()
+      scenarioService.playBackgroundSound()
+      scenarioService.renderStage(frog)
       tickService.playTicks()
+    } else {
+      logger.print("Could not start game.")
+    }
+  }
+  
+  method continueLevel() {
+    logger.print("continueLevel called.")
+    if (stateManager.isGameInProgress()) {
+      scenarioService.renderStage(frog)
+      tickService.playTicks()
+    } else {
+      logger.print("Game is not in progress, cannot continue to next level.")
+    }
+  }
+  
+  method resetGame() {
+    logger.print("resetGame called.")
+    scenarioService.resetScenario()
+    self.manualInitialize()
+  }
+  
+  method pauseGame() {
+    if (stateManager.isGameInProgress()) {
+      logger.print("Game is in progress, pausing...")
+      stateManager.pauseGame()
+      scenarioService.pauseBackgroundSound()
+      scenarioService.renderPauseScreen()
+      tickService.stopTicks()
+    } else {
+      logger.print("Game is not in progress, cannot pause.")
+    }
+  }
+  
+  method resumeGame() {
+    if (stateManager.isGamePaused()) {
+      logger.print("Resuming game...")
+      stateManager.resumeGame()
+      scenarioService.resumeBackgroundSound()
+      scenarioService.quitPauseScreen()
+      tickService.playTicks()
+    } else {
+      logger.print("Game is not paused, cannot resume.")
+    }
+  }
+  
+  method wonGame() {
+    stateManager.wonGame()
+    scenarioService.renderGameWonScreen()
+    tickService.stopTicks()
+    logger.print("Game won!")
+  }
+  
+  method loseGame() {
+    stateManager.loseGame()
+    tickService.stopTicks()
+    scenarioService.renderGameLoseScreen()
+    logger.print("Game lost!")
+  }
+  
+  method evaluateLose() {
+    logger.print("Evaluating if the frog has lost...")
+    tickService.stopTicks()
+    
+    if (stateManager.currentLives() > 1) {
+      logger.print("Frog has lost a life, resetting level...")
+      stateManager.subtractLife()
+      self.continueLevel()
+    } else {
+      logger.print("Frog has no lives left, game over.")
+      self.loseGame()
+    }
+  }
+  
+  method evaluateWon() {
+    logger.print("Evaluating if the frog has won...")
+    tickService.stopTicks()
+    
+    if (stateManager.currentLevel() < stateManager.maxLevel()) {
+      logger.print("Frog has won the level, proceeding to next level...")
+      stateManager.nextLevel()
+      self.continueLevel()
+    } else {
+      stateManager.resetLevel()
+      scenarioService.showGameWonMessage(frog)
+      self.wonGame()
+    }
+  }
+  
+  method moveFrogTo(newPosition) {
+    if (stateManager.isGameInProgress()) frogService.moveTo(newPosition)
+  }
+  
+  method handleMoveLogs() {
+    scenarioService.handleMoveLogs(
+      { newPosition => self.moveFrogTo(newPosition) },
+      { self.evaluateLose() },
+      frog
+    )
+  }
+  
+  method handleCheckFrog() {
+    frogService.checkFrog({ self.evaluateWon() }, { self.evaluateLose() })
   }
 }
