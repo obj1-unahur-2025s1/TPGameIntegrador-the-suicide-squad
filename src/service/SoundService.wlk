@@ -96,4 +96,14 @@ class SoundService {
     const waterFall = game.sound(constants.waterFallSound())
     waterFall.play()
   }
+
+  /**
+  * Plays a generic sound effect.
+  */
+  method playGenericSound(sound) {
+    if (sound != null) {
+      const genericSound = game.sound(sound)
+      genericSound.play()
+    }
+  }
 }

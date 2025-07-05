@@ -1,6 +1,8 @@
+import src.model.BonusLog.*
 import src.model.LogLong.*
 import src.model.LogShort.*
 import src.model.Stage.* 
+import src.utils.constants.*
 
 /**
 * Factory class responsible for creating all stages of the game
@@ -28,7 +30,7 @@ class StageFactory {
       new LogLong(id = 4, row = 6, startX = 12, speed = 1),
       new LogLong(id = 5, row = 6, startX = 16, speed = 1),
       new LogLong(id = 6, row = 4, startX = 3, speed = -1),
-      new LogLong(id = 7, row = 4, startX = 8, speed = -1),
+      new BonusLog(id = 7, row = 4, startX = 8, speed = -1, image = constants.bonusLogFitoImage(), sound = constants.bonusLogFitoSound()),
       new LogLong(id = 8, row = 4, startX = 13, speed = -1),
       new LogLong(id = 9, row = 4, startX = 18, speed = -1),
       new LogLong(id = 10, row = 2, startX = 0, speed = 1),
@@ -53,7 +55,7 @@ class StageFactory {
       new LogLong(id = 18, row = 6, startX = 12, speed = 1),
       new LogShort(id = 19, row = 6, startX = 16, speed = 1),
       new LogLong(id = 20, row = 4, startX = 3, speed = -1),
-      new LogShort(id = 21, row = 4, startX = 8, speed = -1),
+      new BonusLog(id = 21, row = 4, startX = 8, speed = -1, image = constants.bonusLogDogImage(), sound = constants.bonusLogDogSound()),
       new LogLong(id = 22, row = 4, startX = 13, speed = -1),
       new LogShort(id = 23, row = 4, startX = 18, speed = -1),
       new LogLong(id = 24, row = 2, startX = 0, speed = 1),
@@ -78,7 +80,7 @@ class StageFactory {
       new LogLong(id = 32, row = 6, startX = 12, speed = 1),
       new LogLong(id = 33, row = 6, startX = 16, speed = 1),
       new LogLong(id = 34, row = 4, startX = 3, speed = -1),
-      new LogShort(id = 35, row = 4, startX = 8, speed = -1),
+      new BonusLog(id = 35, row = 4, startX = 8, speed = -1, image = constants.bonusLogCfImage(), sound = constants.bonusLogCfSound()),
       new LogLong(id = 36, row = 4, startX = 13, speed = -1),
       new LogShort(id = 37, row = 4, startX = 18, speed = -1),
       new LogShort(id = 38, row = 2, startX = 0, speed = 1),
