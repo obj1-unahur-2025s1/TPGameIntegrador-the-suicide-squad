@@ -40,7 +40,7 @@ describe "Tests" {
   }
   
   test "Log moves and resets" {
-    const log = new LogLong(row = 0, startX = 19, speed = 1)
+    const log = new LogLong(id = 1, row = 0, startX = 19, speed = 1)
     log.moveAndCheckReset()
     
     assert.equals(true, log.position().x() == 0)
@@ -48,7 +48,7 @@ describe "Tests" {
   
   test "Frog is on a log" {
     frog.position(game.at(5, 3))
-    const log = new LogLong(row = 3, startX = 5, speed = 1)
+    const log = new LogLong(id = 2, row = 3, startX = 5, speed = 1)
     stateManager.currentLogsList([log])
     assert.equals(true, frogService.isInLog())
   }

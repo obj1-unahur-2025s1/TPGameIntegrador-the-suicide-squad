@@ -27,4 +27,3 @@
 - **Curso/Facultad:** UNAHUR, PROGRAMACION CON OBJETOS I
 - **Versión de Wollok:** VSCODE Wollok Cli 0.3.1
 - **Licencia:** Una vez terminado, no tenemos problemas en que el repositorio sea público.
-/Users/tbarenghi/Desktop/repos/unahur/obj1/TPGameIntegrador-the-suicide-squad/README.md
