@@ -1,10 +1,3 @@
-// src/config/StateManager.wlk
-// src/config/StateManager.wlk
-// src/config/StateManager.wlk
-// src/config/StateManager.wlk
-// src/config/StateManager.wlk
-// src/config/StateManager.wlk
-// src/config/StateManager.wlk
 import src.utils.constants.*
 
 /**
@@ -14,68 +7,92 @@ import src.utils.constants.*
 class StateManager {
   const width = constants.gameWidth()
   const height = constants.gameHeight()
+
   const property frogInitXPosition = width / 2
   const property frogInitYPosition = height - 1
+
   var property currentLogsList = []
-  var property isInProgress = false
-  var property isStartScreen = true //nuevos
+
   var property currentLevel = 1
   const property maxLevel = 3
-  var property isPaused = false //nuevos
-  var property gameWon = false //nuevos
-  var property gameLose = false //nuevos
-  var property river = null 
-  const property lives = 3 
-  var property currentLives = lives //nuevos
+
+  var property isInProgress = false
+  var property isStartScreen = true
+  var property isPaused = false
+
+  var property gameWon = false
+  var property gameLose = false
+
+  const property lives = 3
+  var property currentLives = lives
+
+  var property river = null
   
-method printState() {
-    console.println("Game State:")
-    console.println("  In Progress: " + isInProgress)
-    console.println("  Start Screen: " + isStartScreen)
-    console.println("  Current Level: " + currentLevel)
-    console.println("  Paused: " + isPaused)
-    console.println("  Game Won: " + gameWon)
-    console.println("  Game Lose: " + gameLose)
-  }
-
-  method isGameInProgress() {
-    return isInProgress && !isPaused && !gameWon && !gameLose && !isStartScreen
-  }
-
-  method isGamePaused() {
-    return isPaused && !isInProgress && !gameWon && !gameLose && !isStartScreen
-  }
-
+  /**
+  * Checks if the game is currently in progress (not paused, not won/lost, and not at start screen).
+  * 
+  * @return true if the game is in progress; false otherwise.
+  */
+  method isGameInProgress() = (((isInProgress && (!isPaused)) && (!gameWon)) && (!gameLose)) && (!isStartScreen)
+  
+  /**
+  * Checks if the game is currently paused (not in progress, not won/lost, and not at start screen).
+  * 
+  * @return true if the game is paused; false otherwise.
+  */
+  method isGamePaused() = (((isPaused && (!isInProgress)) && (!gameWon)) && (!gameLose)) && (!isStartScreen)
+  
+  /**
+  * Pauses the game, setting inProgress false and paused true.
+  */
   method pauseGame() {
     isInProgress = false
     isPaused = true
   }
   
+  /**
+  * Resumes the game, setting inProgress true and paused false.
+  */
   method resumeGame() {
     isInProgress = true
     isPaused = false
   }
   
+  /**
+  * Marks the game as lost and stops game progress.
+  */
   method loseGame() {
     isInProgress = false
     gameLose = true
   }
   
+  /**
+  * Marks the game as won and stops game progress.
+  */
   method wonGame() {
     isInProgress = false
     gameWon = true
   }
   
+  /**
+  * Starts a new game by resetting state and setting inProgress true.
+  */
   method startGame() {
     self.resetGameState()
     isInProgress = true
     isStartScreen = false
   }
   
+  /**
+  * Resets the entire game state to the initial values.
+  */
   method resetGame() {
     self.resetGameState()
   }
   
+  /**
+  * Resets all game state flags, level, logs, and lives.
+  */
   method resetGameState() {
     isInProgress = false
     isStartScreen = true
@@ -87,14 +104,23 @@ method printState() {
     currentLives = lives
   }
   
+  /**
+  * Advances the current level by one.
+  */
   method nextLevel() {
     currentLevel += 1
   }
   
+  /**
+  * Resets the current level to the first level.
+  */
   method resetLevel() {
     currentLevel = 1
   }
-
+  
+  /**
+  * Subtracts one life from current lives, ensuring it does not go below zero.
+  */
   method subtractLife() {
     if (currentLives > 0) {
       currentLives -= 1

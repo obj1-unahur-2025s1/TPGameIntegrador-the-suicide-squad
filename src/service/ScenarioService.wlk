@@ -1,97 +1,145 @@
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-// src/service/ScenarioService.wlk
-import src.ui.won.* // src/service/ScenarioService.wlk
-import src.ui.lose.* // src/service/ScenarioService.wlk
-import src.ui.pause.* // src/service/ScenarioService.wlk
-import src.ui.welcome.*
+import src.model.UiScreen.*
+import src.model.VisualBox.*
+import src.service.SoundService.*
 import src.config.StateManager.*
 import src.utils.StageFactory.*
 import wollok.game.*
 import src.utils.constants.*
 
+/**
+* Handles visual setup and updates for game scenarios, such as 
+* screens, stages, counters, and interactions with sound.
+*/
 class ScenarioService {
   const stateManager
   var currentLogsList = []
   const stageFactory = new StageFactory()
+  const soundService = new SoundService(stateManager = stateManager)
+
+  const lifeCounter = new VisualBox(
+    imageDic = constants.lifeCounterImages(),
+    position = game.at(constants.gameWidth() - 2, constants.gameHeight() - 1),
+    currentKey = { stateManager.currentLives() }
+  )
+
+  const levelCounter = new VisualBox(
+    imageDic = constants.levelCounterImages(),
+    position = game.at(0, constants.gameHeight() - 1),
+    currentKey = { stateManager.currentLevel() }
+  )
+
+  const welcomeScreen = new UiScreen(image = constants.welcomeScreen())
+  const pauseScreen = new UiScreen(image = constants.pauseScreen())
+  const wonScreen = new UiScreen(image = constants.wonScreen())
+  const loseScreen = new UiScreen(image = constants.loseScreen())
   
+  /**
+  * Sets initial board ground and renders the welcome screen.
+  */
   method initialize() {
     game.boardGround(constants.boardGround())
     self.renderWelcomeScreen()
   }
   
+  /**
+  * Performs full reinitialization: stops sounds, resets state, 
+  * and renders the welcome screen.
+  */
   method manualInitialize() {
-    if ((stateManager.river() != null) && (stateManager.river().paused() || stateManager.river().played()))
-      self.quitBackgroundSound()
+    soundService.quitAllSounds()
     stateManager.river(null)
     stateManager.resetGameState()
     stateManager.river(game.sound(constants.riverSound()))
     stateManager.river().shouldLoop(true)
-    console.println("ScenarioService initialized.")
     self.renderWelcomeScreen()
   }
   
-  method playBackgroundSound() {
-    stateManager.river().play()
+  /**
+  * Renders the heart/life counter on screen.
+  */
+  method renderLifeCounter() {
+    game.addVisual(lifeCounter)
   }
   
-  method pauseBackgroundSound() {
-    stateManager.river().stop()
+  /**
+  * Renders the level counter on screen.
+  */
+  method renderLevelCounter() {
+    game.addVisual(levelCounter)
   }
   
-  method resumeBackgroundSound() {
-    stateManager.river().play()
-  }
-  
-  method quitBackgroundSound() {
-    stateManager.river().stop()
-  }
-  
+  /**
+  * Displays the pause screen and pauses background audio.
+  */
   method renderPauseScreen() {
-    if (!game.hasVisual(pauseScreen)) game.addVisual(pauseScreen)
+    if (!game.hasVisual(pauseScreen)) {
+      soundService.pauseBackgroundSound()
+      game.addVisual(pauseScreen)
+    }
   }
   
+  /**
+  * Hides the pause screen and resumes background audio.
+  */
   method quitPauseScreen() {
+    soundService.resumeBackgroundSound()
     game.removeVisual(pauseScreen)
   }
   
+  /**
+  * Displays the welcome screen if not already shown.
+  */
   method renderWelcomeScreen() {
     if (!game.hasVisual(welcomeScreen)) game.addVisual(welcomeScreen)
   }
   
+  /**
+  * Removes the welcome screen.
+  */
   method quitWelcomeScreen() {
     game.removeVisual(welcomeScreen)
   }
   
+  /**
+  * Renders the "game won" screen and plays corresponding music.
+  */
   method renderGameWonScreen() {
-    if (!game.hasVisual(wonScreen)) game.addVisual(wonScreen)
-  }
-  
-  method quitGameWonScreen() {
-    game.removeVisual(wonScreen)
-  }
-  
-  method renderGameLoseScreen() {
-    if (!game.hasVisual(loseScreen)) game.addVisual(loseScreen)
-  }
-  
-  method quitGameLoseScreen() {
-    game.removeVisual(loseScreen)
+    if (!game.hasVisual(wonScreen)) {
+      soundService.pauseBackgroundSound()
+      soundService.playWonMusic()
+      game.addVisual(wonScreen)
+    }
   }
   
   /**
-  * Renders the entire stage including visuals, logs, and frog.
+  * Removes the "game won" screen and stops the music.
+  */
+  method quitGameWonScreen() {
+    game.removeVisual(wonScreen)
+    soundService.quitWonMusic()
+  }
+  
+  /**
+  * Renders the "game lost" screen and plays corresponding music.
+  */
+  method renderGameLoseScreen() {
+    if (!game.hasVisual(loseScreen)) {
+      soundService.pauseBackgroundSound()
+      soundService.playLoseMusic()
+      game.addVisual(loseScreen)
+    }
+  }
+  
+  /**
+  * Removes the "game lost" screen and stops the music.
+  */
+  method quitGameLoseScreen() {
+    game.removeVisual(loseScreen)
+    soundService.quitLoseMusic()
+  }
+  
+  /**
+  * Renders the entire stage including visuals, logs, counters and frog.
   * 
   * @param frog The frog entity to render.
   */
@@ -99,9 +147,33 @@ class ScenarioService {
     self.removeAllVisuals()
     self.updateLogsList()
     self.renderLogs()
+    self.renderLifeCounter()
+    self.renderLevelCounter()
+    self.renderFrog(frog)
+    soundService.playBackgroundSound()
+  }
+  
+  /**
+  * Renders the level, with an optional sound for retrying same level.
+  * 
+  * @param frog The frog to display.
+  * @param repeatSameLevel Whether it's a retry (true) or new level (false).
+  */
+  method renderLevel(frog, repeatSameLevel) {
+    if (repeatSameLevel) soundService.playWaterFall()
+    else soundService.playNextLevel()
+    
+    self.removeAllVisuals()
+    self.updateLogsList()
+    self.renderLogs()
+    self.renderLifeCounter()
+    self.renderLevelCounter()
     self.renderFrog(frog)
   }
   
+  /**
+  * Clears visuals and resets the scenario state.
+  */
   method resetScenario() {
     self.removeAllVisuals()
     stateManager.resetGame()
@@ -112,24 +184,10 @@ class ScenarioService {
   * Updates the current list of logs for the current level.
   */
   method updateLogsList() {
-    console.println(
-      "Updating logs list for level: " + stateManager.currentLevel()
-    )
-    console.println(game.allVisuals())
-    console.println(stateManager.currentLogsList())
-    console.println(stageFactory.allStages())
-    console.println(
-      stageFactory.allStages().find(
-        { stage => stage.level() == stateManager.currentLevel() }
-      )
-    )
-    const currentLogsListb = stageFactory.allStages().find(
-      { stage => stage.level() == stateManager.currentLevel() }
-    ).logList()
-    console.println(currentLogsListb)
     currentLogsList = stageFactory.allStages().find(
       { stage => stage.level() == stateManager.currentLevel() }
     ).logList()
+    
     stateManager.currentLogsList(currentLogsList)
   }
   
@@ -161,7 +219,8 @@ class ScenarioService {
   /**
   * Handles movement of logs and collision logic with the frog during game ticks.
   * 
-  * @param caller The caller object (usually GameService) to trigger game state changes.
+  * @param moveFrogTo Function to move the frog to a new position.
+  * @param loseGame Function to invoke if the frog is lost.
   * @param frog The frog entity involved in the interactions.
   */
   method handleMoveLogs(moveFrogTo, loseGame, frog) {
@@ -184,32 +243,5 @@ class ScenarioService {
         return moveFrogTo.apply(newFrogPos)
       }
     )
-  }
-  
-  /**
-  * Shows the game won message to the player.
-  * 
-  * @param frog The frog entity to display the message near.
-  */
-  method showGameWonMessage(frog) {
-    game.say(frog, constants.gameWonMessage())
-  }
-  
-  /**
-  * Shows a partial win message indicating the current level won.
-  * 
-  * @param frog The frog entity to display the message near.
-  */
-  method partiallyWonMessage(frog) {
-    game.say(frog, ("¡Ganaste el nivel " + stateManager.currentLevel()) + "!")
-  }
-  
-  /**
-  * Shows the game over message to the player.
-  * 
-  * @param frog The frog entity to display the message near.
-  */
-  method showGameOverMessage(frog) {
-    game.say(frog, constants.gameLostMessage())
   }
 }

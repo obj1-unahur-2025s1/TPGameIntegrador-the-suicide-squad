@@ -21,8 +21,6 @@ describe "Tests" {
         game.start()
       }
 
-    const gameService = new GameService()
-    const stageFactory = new StageFactory()
     const stateManager = new StateManager()
     const tickService = new TickService()
     const frog = new Frog(
@@ -42,15 +40,6 @@ describe "Tests" {
     test "Frog reached goal" {
       frog.position(game.at(0, 0))
       assert.equals(true, frog.reachedGoal())
-    }
-
-    test "Frog can move" {
-      var left = new KeyBinding(
-        key = keyboard.left(),
-        action = { GameService.tryMoveFrogTo(frog.position().left(2)) }
-      )
-      frogService.moveTo(left)
-      assert.equals(true, (frog.position() == game.at(10, 8)))
     }
 
     test "Log moves and resets" {

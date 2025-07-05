@@ -1,7 +1,5 @@
-// src/config/setup.wlk
 import src.service.GameService.*
 import src.utils.constants.*
-
 
 /**
 * Handles the initial setup of the game, including window configuration, title, 
@@ -20,29 +18,17 @@ object setup {
     game.width(width)
     game.height(height)
     game.cellSize(cellSize)
-    // self.setTitle(currentTitle)
-    // self.initializeRiver()
-      
-
+    self.setTitle(currentTitle)
     new GameService()
   }
   
-  // /**
-  // * Sets the title of the game window and updates the current title variable.
-  // * 
-  // * @param title The title to be set for the game window.
-  // */
-  // method setTitle(title) {
-  //   currentTitle = title
-  //   game.title(title)
-  // }
-  
-  // /**
-  // * Initializes the river sound, sets it to loop, and starts playback.
-  // */
-  // method initializeRiver() {
-  //   const river = game.sound(constants.riverSound())
-  //   river.shouldLoop(true)
-  //   river.play()
-  // }
+  /**
+  * Sets the title of the game window and updates the current title variable.
+  * 
+  * @param title The title to be set for the game window.
+  */
+  method setTitle(title) {
+    currentTitle = title
+    game.title(title)
+  }
 }

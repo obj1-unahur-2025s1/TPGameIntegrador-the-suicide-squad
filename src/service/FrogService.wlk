@@ -1,9 +1,6 @@
-// src/service/FrogService.wlk
-// src/service/FrogService.wlk
-// src/service/FrogService.wlk
-// src/service/FrogService.wlk
-// src/service/FrogService.wlk
-import src.model.Frog.* // src/service/FrogService.wlk
+import src.utils.constants.*
+import src.model.Frog.* 
+import wollok.game.*
 
 /**
 * Provides services related to the frog's state and movement,
@@ -12,11 +9,20 @@ import src.model.Frog.* // src/service/FrogService.wlk
 */
 class FrogService {
   const stateManager
+
   const property frog = new Frog(
     startX = stateManager.frogInitXPosition(),
     startY = stateManager.frogInitYPosition()
   )
   
+  /**
+  * Evaluates the current game state based on the frog's position.
+  * If the frog reaches the goal, triggers win condition.
+  * If the frog is in a danger zone and not on a log, triggers lose condition.
+  *
+  * @param evaluateWon Function to invoke if the frog wins.
+  * @param loseGame Function to invoke if the frog loses.
+  */
   method checkFrog(evaluateWon, loseGame) {
     if (self.didFrogReachGoal()) {
       evaluateWon.apply()
@@ -31,22 +37,6 @@ class FrogService {
   * @return true if the frog reached the goal; false otherwise.
   */
   method didFrogReachGoal() = frog.reachedGoal()
-  
-  method moveUp() {
-    self.moveTo(frog.position().up(2))
-  }
-  
-  method moveDown() {
-    self.moveTo(frog.position().down(2))
-  }
-  
-  method moveLeft() {
-    self.moveTo(frog.position().left(2))
-  }
-  
-  method moveRight() {
-    self.moveTo(frog.position().right(2))
-  }
   
   /**
   * Moves the frog to a specified position if the move is valid.
@@ -67,6 +57,54 @@ class FrogService {
         stateManager.frogInitYPosition()
       )
     )
+  }
+  
+  /**
+  * Plays the frog's croack sound effect.
+  */
+  method croack() {
+    const croack = game.sound(constants.croackSound())
+    croack.play()
+  }
+  
+  /**
+  * Moves the frog one unit up if the game is in progress.
+  */
+  method moveUp() {
+    if (stateManager.isGameInProgress()) {
+      self.croack()
+      self.moveTo(frog.position().up(2))
+    }
+  }
+  
+  /**
+  * Moves the frog one unit down if the game is in progress.
+  */
+  method moveDown() {
+    if (stateManager.isGameInProgress()) {
+      self.croack()
+      self.moveTo(frog.position().down(2))
+    }
+  }
+  
+  /**
+  * Moves the frog one unit left if the game is in progress.
+  */
+  method moveLeft() {
+    if (stateManager.isGameInProgress()) {
+      self.croack()
+      self.moveTo(frog.position().left(2))
+    }
+  }
+  
+  /**
+  * Moves the frog one unit right if the game is in progress.
+  */
+  method moveRight() {
+    if (stateManager.isGameInProgress()) {
+      self.croack()
+      self.moveTo(frog.position().right(2))
+    }
   }
   
   /**
@@ -92,9 +130,9 @@ class FrogService {
   * @param pos The position to validate.
   * @return true if the move is valid; false otherwise.
   */
-  method canMoveTo(pos) = stateManager.isGameInProgress() && self.isWithinBounds(
+  method canMoveTo(
     pos
-  )
+  ) = stateManager.isGameInProgress() && self.isWithinBounds(pos)
   
   /**
   * Checks if a position is within the horizontal and vertical bounds of the game area.
