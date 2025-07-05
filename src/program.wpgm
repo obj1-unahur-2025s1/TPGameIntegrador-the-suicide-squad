@@ -1,4 +1,3 @@
-// src/program.wpgm
 import wollok.game.*
 import src.config.setup.*
 
@@ -7,6 +6,6 @@ import src.config.setup.*
  * It initializes the setup and starts the game loop.
  */
 program FroggerGame {
-  setup.initialize()
+  setup.initializeSetup()
   game.start()
 }

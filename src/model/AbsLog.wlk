@@ -3,6 +3,7 @@
 * Handles positioning, movement, and reset behavior when reaching screen edges.
 */
 class AbsLog {
+  const property id
   const startX = 0
   const row = 0
   const property speed = 1

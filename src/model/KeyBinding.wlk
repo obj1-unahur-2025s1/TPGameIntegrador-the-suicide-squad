@@ -1,16 +1,24 @@
+import src.utils.Logger.*
+
 /**
-* Represents a key binding that links a key press to an action,
-* optionally conditioned on a boolean flag.
+* Represents a binding between a keyboard key and an action to perform when that key is pressed.
 */
 class KeyBinding {
+  /**
+  * The keyboard key to listen for.
+  */
   const key
+
+  /**
+  * The action (function) to execute when the key is pressed.
+  */
   const action
-  const condition = true 
   
   /**
-  * Binds the action to the key press, executing it only if the condition is true.
+  * Binds the key to the specified action. When the key is pressed,
+  * the action will be executed.
   */
   method bind() {
-    key.onPressDo({ if (condition) action.apply() })
+    key.onPressDo({ action.apply() })
   }
 }

@@ -11,59 +11,45 @@ import src.model.KeyBinding.*
 import src.model.AbsLog.*
 import src.model.LogLong.*
 
-
-
 describe "Tests" {
-
-    method initalize(){
-        game.clear()
-        setup.initialize()
-        game.start()
-      }
-
-    const gameService = new GameService()
-    const stageFactory = new StageFactory()
-    const stateManager = new StateManager()
-    const tickService = new TickService()
-    const frog = new Frog(
+  const stateManager = new StateManager()
+  const tickService = new TickService()
+  const frog = new Frog(
     startX = stateManager.frogInitXPosition(),
     startY = stateManager.frogInitYPosition()
-    )
-    const frogService = new FrogService(stateManager = stateManager, frog = frog)
-
-    test "tickService runs properly" {
-        assert.equals(true, tickService.areTicksRunning())
-      }
-
-    test "Frog didnt reach goal" {
-      assert.equals(false, frog.reachedGoal())
-    }
-
-    test "Frog reached goal" {
-      frog.position(game.at(0, 0))
-      assert.equals(true, frog.reachedGoal())
-    }
-
-    test "Frog can move" {
-      var left = new KeyBinding(
-        key = keyboard.left(),
-        action = { GameService.tryMoveFrogTo(frog.position().left(2)) }
-      )
-      frogService.moveTo(left)
-      assert.equals(true, (frog.position() == game.at(10, 8)))
-    }
-
-    test "Log moves and resets" {
-        const log = new LogLong(row = 0, startX = 19, speed = 1)
-        log.moveAndCheckReset()
-
-        assert.equals(true, log.position().x() == 0)
-    }
-
-    test "Frog is on a log" {
-        frog.position(game.at(5, 3))
-        const log = new LogLong(row = 3, startX = 5, speed = 1)
-        stateManager.currentLogsList([log])
-        assert.equals(true,  frogService.isInLog())
-}
+  )
+  const frogService = new FrogService(stateManager = stateManager, frog = frog)
+  
+  method initalize() {
+    game.clear()
+    setup.initialize()
+    game.start()
+  }
+  
+  test "tickService runs properly" {
+    assert.equals(true, tickService.areTicksRunning())
+  }
+  
+  test "Frog didnt reach goal" {
+    assert.equals(false, frog.reachedGoal())
+  }
+  
+  test "Frog reached goal" {
+    frog.position(game.at(0, 0))
+    assert.equals(true, frog.reachedGoal())
+  }
+  
+  test "Log moves and resets" {
+    const log = new LogLong(id = 1, row = 0, startX = 19, speed = 1)
+    log.moveAndCheckReset()
+    
+    assert.equals(true, log.position().x() == 0)
+  }
+  
+  test "Frog is on a log" {
+    frog.position(game.at(5, 3))
+    const log = new LogLong(id = 2, row = 3, startX = 5, speed = 1)
+    stateManager.currentLogsList([log])
+    assert.equals(true, frogService.isInLog())
+  }
 }

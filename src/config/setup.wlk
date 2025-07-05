@@ -14,12 +14,11 @@ object setup {
   /**
   * Initializes the game setup, including screen dimensions, title, river sound, and main game service.
   */
-  method initialize() {
+  method initializeSetup() {
     game.width(width)
     game.height(height)
     game.cellSize(cellSize)
     self.setTitle(currentTitle)
-    self.initializeRiver()
     new GameService()
   }
   
@@ -31,14 +30,5 @@ object setup {
   method setTitle(title) {
     currentTitle = title
     game.title(title)
-  }
-  
-  /**
-  * Initializes the river sound, sets it to loop, and starts playback.
-  */
-  method initializeRiver() {
-    const river = game.sound(constants.riverSound())
-    river.shouldLoop(true)
-    river.play()
   }
 }
