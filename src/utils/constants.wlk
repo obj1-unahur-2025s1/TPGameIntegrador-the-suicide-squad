@@ -27,6 +27,12 @@ object constants {
   const property waterFallSound = "water-fall.mp3"
   const property wonSound = "won.mp3"
   const property pointsCounterBadge = "points-badge.png"
+  const property bonusLogCfImage = "cf-log.png"
+  const property bonusLogCfSound = "cf-1.mp3"
+  const property bonusLogDogImage = "perro.png"
+  const property bonusLogDogSound = "perro.mp3"
+  const property bonusLogFitoImage = "fito.png"
+  const property bonusLogFitoSound = "fito.mp3"
   
   method lifeCounterImages() {
     const dic = new Dictionary()

@@ -6,6 +6,7 @@ class AbsLog {
   const property id
   const startX = 0
   const row = 0
+  const property sound = null
   const property speed = 1
   var property position = game.at(startX, row)
   

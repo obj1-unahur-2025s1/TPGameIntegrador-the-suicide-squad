@@ -253,6 +253,10 @@ class ScenarioService {
           stateManager.incrementPoints(log.points())
         }
 
+        if(log.id() != frog.lastLogId() && log.sound() != null) {
+          soundService.playGenericSound(log.sound())
+        }
+
         frog.lastLogId(log.id())
 
         if (logReset || frog.isOutOfBounds(log.speed())) {
