@@ -3,13 +3,13 @@ import src.utils.constants.*
 
 /**
 * Represents the player-controlled frog in the game.
-* Tracks position, movement, and state (e.g., alive or at goal).
+* Tracks position, movement, and state.
 */
 class Frog {
   const startX = 0
   const startY = 0
   var property position = game.at(startX, startY)
-  var property alive = true 
+  var property lastLogId = null 
 
   /**
   * Determines if the frog's next horizontal move would take it out of the game bounds.

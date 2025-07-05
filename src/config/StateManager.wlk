@@ -26,6 +26,8 @@ class StateManager {
   const property lives = 3
   var property currentLives = lives
 
+  var property points = 0
+
   var property river = null
   
   /**
@@ -102,6 +104,7 @@ class StateManager {
     currentLevel = 1
     currentLogsList = []
     currentLives = lives
+    points = 0
   }
   
   /**
@@ -125,5 +128,13 @@ class StateManager {
     if (currentLives > 0) {
       currentLives -= 1
     }
+  }
+
+  /**
+  * Increments the points by a specified amount.
+  * @param pointsToAdd The number of points to add to the current score.
+  */
+  method incrementPoints(pointsToAdd) {
+    points += pointsToAdd
   }
 }

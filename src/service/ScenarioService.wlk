@@ -1,3 +1,4 @@
+import src.model.UiText.*
 import src.model.UiScreen.*
 import src.model.VisualBox.*
 import src.service.SoundService.*
@@ -26,6 +27,12 @@ class ScenarioService {
     imageDic = constants.levelCounterImages(),
     position = game.at(0, constants.gameHeight() - 1),
     currentKey = { stateManager.currentLevel() }
+  )
+
+  const pointsCounter = new UiText(
+    position = game.at(2, constants.gameHeight() - 1),
+    text = { "                    " + "Puntos: " + stateManager.points() },
+    image = constants.pointsCounterBadge()
   )
 
   const welcomeScreen = new UiScreen(image = constants.welcomeScreen())
@@ -66,6 +73,13 @@ class ScenarioService {
   */
   method renderLevelCounter() {
     game.addVisual(levelCounter)
+  }
+
+  /**
+  * Updates the points counter text and renders it on screen.
+  */
+  method renderPointsCounter() {
+    game.addVisual(pointsCounter)
   }
   
   /**
@@ -149,6 +163,7 @@ class ScenarioService {
     self.renderLogs()
     self.renderLifeCounter()
     self.renderLevelCounter()
+    self.renderPointsCounter()
     self.renderFrog(frog)
     soundService.playBackgroundSound()
   }
@@ -168,6 +183,7 @@ class ScenarioService {
     self.renderLogs()
     self.renderLifeCounter()
     self.renderLevelCounter()
+    self.renderPointsCounter()
     self.renderFrog(frog)
   }
   
@@ -206,7 +222,6 @@ class ScenarioService {
   method renderFrog(frog) {
     frog.resetPosition()
     game.addVisual(frog)
-    game.say(frog, constants.useArrowsMessage())
   }
   
   /**
@@ -218,6 +233,7 @@ class ScenarioService {
   
   /**
   * Handles movement of logs and collision logic with the frog during game ticks.
+  * Increments points if the frog is on a log and checks for game loss conditions.
   * 
   * @param moveFrogTo Function to move the frog to a new position.
   * @param loseGame Function to invoke if the frog is lost.
@@ -232,7 +248,13 @@ class ScenarioService {
         if (!frogIsOnLog) {
           return
         }
-        
+
+        if(log.id() != frog.lastLogId()) {
+          stateManager.incrementPoints(log.points())
+        }
+
+        frog.lastLogId(log.id())
+
         if (logReset || frog.isOutOfBounds(log.speed())) {
           loseGame.apply()
           return
@@ -240,6 +262,7 @@ class ScenarioService {
         
         const newFrogX = frog.nextXPosition(log.speed())
         const newFrogPos = game.at(newFrogX, frog.position().y())
+
         return moveFrogTo.apply(newFrogPos)
       }
     )

@@ -1,3 +1,4 @@
+import src.utils.constants.*
 import src.utils.Logger.*
 import src.service.ScenarioService.*
 import src.service.FrogService.*
@@ -142,16 +143,20 @@ class GameService {
   * Determines if the game should proceed after losing a life or fully lose.
   */
   method evaluateLose() {
-    logger.print("Evaluating if the frog has lost...")
-    tickService.stopTicks()
-    
-    if (stateManager.currentLives() > 1) {
-      logger.print("Frog has lost a life, resetting level...")
-      stateManager.subtractLife()
-      self.continueLevel(true)
+    if (!constants.alwaysWin()) {
+      logger.print("Evaluating if the frog has lost...")
+      tickService.stopTicks()
+      
+      if (stateManager.currentLives() > 1) {
+        logger.print("Frog has lost a life, resetting level...")
+        stateManager.subtractLife()
+        self.continueLevel(true)
+      } else {
+        logger.print("Frog has no lives left, game over.")
+        self.loseGame()
+      }
     } else {
-      logger.print("Frog has no lives left, game over.")
-      self.loseGame()
+      logger.print("Always win mode is enabled, skipping lose evaluation.")
     }
   }
   

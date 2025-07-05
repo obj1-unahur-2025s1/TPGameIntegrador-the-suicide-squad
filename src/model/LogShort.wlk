@@ -6,6 +6,8 @@ import src.utils.constants.*
 * Inherits behavior from AbsLog and defines its specific image.
 */
 class LogShort inherits AbsLog {
+  const property points = 140
+  
   /**
   * Returns the image used to represent the short log.
   * 
