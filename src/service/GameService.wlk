@@ -1,3 +1,5 @@
+// src/service/GameService.wlk
+// src/service/GameService.wlk
 import src.utils.constants.*
 import src.utils.Logger.*
 import src.service.ScenarioService.*
@@ -25,6 +27,8 @@ class GameService {
   * Sets up input bindings, tick handlers, and initializes the scenario.
   */
   method initialize() {
+    scenarioService.manualInitialize()
+
     inputService.bindControls(
       { self.startGame() },
       { self.resetGame() },
@@ -40,8 +44,8 @@ class GameService {
       { self.handleCheckFrog() },
       { self.handleMoveLogs() }
     )
-    self.manualInitialize()
-  }
+
+    logger.print("Initialized.")  }
   
   /**
   * Performs manual initialization: resets scenario and logs message.

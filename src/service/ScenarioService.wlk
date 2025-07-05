@@ -45,6 +45,7 @@ class ScenarioService {
   */
   method initialize() {
     game.boardGround(constants.boardGround())
+    soundService.quitAllSounds()
     self.renderWelcomeScreen()
   }
   
@@ -87,7 +88,7 @@ class ScenarioService {
   */
   method renderPauseScreen() {
     if (!game.hasVisual(pauseScreen)) {
-      soundService.pauseBackgroundSound()
+      soundService.pauseRiverSound()
       game.addVisual(pauseScreen)
     }
   }
@@ -96,7 +97,7 @@ class ScenarioService {
   * Hides the pause screen and resumes background audio.
   */
   method quitPauseScreen() {
-    soundService.resumeBackgroundSound()
+    soundService.resumeRiverSound()
     game.removeVisual(pauseScreen)
   }
   
@@ -104,13 +105,17 @@ class ScenarioService {
   * Displays the welcome screen if not already shown.
   */
   method renderWelcomeScreen() {
-    if (!game.hasVisual(welcomeScreen)) game.addVisual(welcomeScreen)
+    if (!game.hasVisual(welcomeScreen)) {
+      soundService.playAmbientMusic()
+      game.addVisual(welcomeScreen)
+    }
   }
   
   /**
   * Removes the welcome screen.
   */
   method quitWelcomeScreen() {
+    soundService.quitAmbientMusic()
     game.removeVisual(welcomeScreen)
   }
   
@@ -119,7 +124,7 @@ class ScenarioService {
   */
   method renderGameWonScreen() {
     if (!game.hasVisual(wonScreen)) {
-      soundService.pauseBackgroundSound()
+      soundService.pauseRiverSound()
       soundService.playWonMusic()
       game.addVisual(wonScreen)
     }
@@ -138,7 +143,7 @@ class ScenarioService {
   */
   method renderGameLoseScreen() {
     if (!game.hasVisual(loseScreen)) {
-      soundService.pauseBackgroundSound()
+      soundService.pauseRiverSound()
       soundService.playLoseMusic()
       game.addVisual(loseScreen)
     }
@@ -165,7 +170,7 @@ class ScenarioService {
     self.renderLevelCounter()
     self.renderPointsCounter()
     self.renderFrog(frog)
-    soundService.playBackgroundSound()
+    soundService.playRiverSound()
   }
   
   /**
@@ -254,7 +259,7 @@ class ScenarioService {
         }
 
         if(log.id() != frog.lastLogId() && log.sound() != null) {
-          soundService.playGenericSound(log.sound())
+          soundService.playGenericSound(log.sound(), log.soundTtl())
         }
 
         frog.lastLogId(log.id())

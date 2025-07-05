@@ -29,6 +29,8 @@ class StateManager {
   var property points = 0
 
   var property river = null
+
+  var property ambientMusic = null
   
   /**
   * Checks if the game is currently in progress (not paused, not won/lost, and not at start screen).

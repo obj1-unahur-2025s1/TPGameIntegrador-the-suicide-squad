@@ -33,6 +33,10 @@ object constants {
   const property bonusLogDogSound = "perro.mp3"
   const property bonusLogFitoImage = "fito.png"
   const property bonusLogFitoSound = "fito.mp3"
+  const property welcomeMusic = "welcome.mp3"
+  const property waterFallTtl = 4000
+  const property nextLevelTtl = 1500
+  const property croackTtl = 1500
   
   method lifeCounterImages() {
     const dic = new Dictionary()

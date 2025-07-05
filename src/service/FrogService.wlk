@@ -65,6 +65,7 @@ class FrogService {
   method croack() {
     const croack = game.sound(constants.croackSound())
     croack.play()
+    game.schedule(constants.croackTtl(), {croack.stop()})
   }
   
   /**
