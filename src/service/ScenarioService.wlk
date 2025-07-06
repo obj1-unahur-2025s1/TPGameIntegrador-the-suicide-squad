@@ -1,3 +1,4 @@
+// src/service/ScenarioService.wlk
 import src.model.UiText.*
 import src.model.UiScreen.*
 import src.model.VisualBox.*
@@ -30,9 +31,8 @@ class ScenarioService {
   )
 
   const pointsCounter = new UiText(
-    position = game.at(constants.pointsCounterX(), constants.hudY()),
-    text = { ("                    " + "Puntos: ") + stateManager.points() },
-    image = constants.pointsCounterBadge()
+    position = game.at(constants.pointsCounterX(), constants.pointsCounterY()),
+    text = { "Puntos: " + stateManager.points() }
   )
 
   const welcomeScreen = new UiScreen(image = constants.welcomeScreen())
