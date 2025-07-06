@@ -1,5 +1,3 @@
-// src/service/GameService.wlk
-// src/service/GameService.wlk
 import src.utils.constants.*
 import src.utils.Logger.*
 import src.service.ScenarioService.*
@@ -45,7 +43,8 @@ class GameService {
       { self.handleMoveLogs() }
     )
 
-    logger.print("Initialized.")  }
+    logger.print("Initialized.")  
+  }
   
   /**
   * Performs manual initialization: resets scenario and logs message.

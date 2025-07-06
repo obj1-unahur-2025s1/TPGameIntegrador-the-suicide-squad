@@ -36,5 +36,5 @@ class VisualBox {
   *
   * @return The image to be displayed.
   */
-  method image() = imageDic.getOrElse(currentKey.apply(), image)
+  method image() = imageDic.getOrElse(currentKey.apply(), { image })
 }
