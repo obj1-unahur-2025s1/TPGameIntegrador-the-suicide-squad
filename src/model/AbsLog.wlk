@@ -1,3 +1,4 @@
+import src.utils.constants.* 
 /**
 * Abstract class representing a moving log in the game.
 * Handles positioning, movement, and reset behavior when reaching screen edges.
@@ -54,4 +55,29 @@ class AbsLog {
   * @return The current game position of the log.
   */
   method position() = position
+  
+  /**
+  * Returns the x coordinate of the log's starting position.
+  * This is adjusted -4 to align with the log's visual representation.
+  */
+  method xStart() {
+      return position.x() - 4
+  }
+  
+  /**
+  * Returns the x coordinate of the log's ending position.
+  */
+  method xEnd() {
+      return (position.x() + constants.logWidthInCells()) - 1
+  }
+  
+  /**
+  * Returns the y coordinate of the log's starting position.
+  */
+  method yStart() = position.y()
+  
+  /**
+  * Returns the y coordinate of the log's starting position.
+  */
+  method yEnd() = (position.y() + constants.logHeightInCells()) - 1
 }

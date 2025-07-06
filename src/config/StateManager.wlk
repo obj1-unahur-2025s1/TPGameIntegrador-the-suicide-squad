@@ -9,7 +9,7 @@ class StateManager {
   const height = constants.gameHeight()
 
   const property frogInitXPosition = width / 2
-  const property frogInitYPosition = height - 1
+  const property frogInitYPosition = height - (1 * constants.scaleFactor())
 
   var property currentLogsList = []
 

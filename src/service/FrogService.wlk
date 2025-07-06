@@ -1,5 +1,5 @@
 import src.utils.constants.*
-import src.model.Frog.* 
+import src.model.Frog.*
 import wollok.game.*
 
 /**
@@ -27,7 +27,11 @@ class FrogService {
     if (self.didFrogReachGoal()) {
       evaluateWon.apply()
     } else {
-      if (self.isDangerZone() && (!self.isInLog())) loseGame.apply()
+      if (self.isDangerZone() && (!self.isInLog())) {
+        const frogX = frog.position().x()
+        const frogY = frog.position().y()
+        loseGame.apply()
+      }
     }
   }
   
@@ -48,24 +52,12 @@ class FrogService {
   }
   
   /**
-  * Resets the frog's position to the initial starting position.
-  */
-  method resetPosition() {
-    frog.position(
-      game.at(
-        stateManager.frogInitXPosition(),
-        stateManager.frogInitYPosition()
-      )
-    )
-  }
-  
-  /**
   * Plays the frog's croack sound effect.
   */
   method croack() {
     const croack = game.sound(constants.croackSound())
     croack.play()
-    game.schedule(constants.croackTtl(), {croack.stop()})
+    game.schedule(constants.croackTtl(), { croack.stop() })
   }
   
   /**
@@ -74,7 +66,7 @@ class FrogService {
   method moveUp() {
     if (stateManager.isGameInProgress()) {
       self.croack()
-      self.moveTo(frog.position().up(2))
+      self.moveTo(frog.position().up(2 * constants.scaleFactor()))
     }
   }
   
@@ -84,7 +76,7 @@ class FrogService {
   method moveDown() {
     if (stateManager.isGameInProgress()) {
       self.croack()
-      self.moveTo(frog.position().down(2))
+      self.moveTo(frog.position().down(2 * constants.scaleFactor()))
     }
   }
   
@@ -94,7 +86,7 @@ class FrogService {
   method moveLeft() {
     if (stateManager.isGameInProgress()) {
       self.croack()
-      self.moveTo(frog.position().left(2))
+      self.moveTo(frog.position().left(2 * constants.scaleFactor()))
     }
   }
   
@@ -104,7 +96,7 @@ class FrogService {
   method moveRight() {
     if (stateManager.isGameInProgress()) {
       self.croack()
-      self.moveTo(frog.position().right(2))
+      self.moveTo(frog.position().right(2 * constants.scaleFactor()))
     }
   }
   
@@ -121,7 +113,13 @@ class FrogService {
   * @return true if the frog is on a log; false otherwise.
   */
   method isInLog() = stateManager.currentLogsList().any(
-    { log => log.position() == frog.position() }
+    { log =>
+      const frogX = frog.position().x()
+      const frogY = frog.position().y()
+      const isValidY = (frogY >= log.yStart()) && (frogY <= log.yEnd())
+      const isValidX = (frogX >= log.xStart()) && (frogX <= log.xEnd())
+      return isValidY && isValidX
+    }
   )
   
   /**

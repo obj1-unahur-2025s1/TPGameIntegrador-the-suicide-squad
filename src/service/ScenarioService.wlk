@@ -19,19 +19,19 @@ class ScenarioService {
 
   const lifeCounter = new VisualBox(
     imageDic = constants.lifeCounterImages(),
-    position = game.at(constants.gameWidth() - 2, constants.gameHeight() - 1),
+    position = game.at(constants.lifeCounterX(), constants.hudY()),
     currentKey = { stateManager.currentLives() }
   )
 
   const levelCounter = new VisualBox(
     imageDic = constants.levelCounterImages(),
-    position = game.at(0, constants.gameHeight() - 1),
+    position = game.at(constants.levelCounterX(), constants.hudY()),
     currentKey = { stateManager.currentLevel() }
   )
 
   const pointsCounter = new UiText(
-    position = game.at(2, constants.gameHeight() - 1),
-    text = { "                    " + "Puntos: " + stateManager.points() },
+    position = game.at(constants.pointsCounterX(), constants.hudY()),
+    text = { ("                    " + "Puntos: ") + stateManager.points() },
     image = constants.pointsCounterBadge()
   )
 
@@ -75,7 +75,7 @@ class ScenarioService {
   method renderLevelCounter() {
     game.addVisual(levelCounter)
   }
-
+  
   /**
   * Updates the points counter text and renders it on screen.
   */
@@ -112,14 +112,6 @@ class ScenarioService {
   }
   
   /**
-  * Removes the welcome screen.
-  */
-  method quitWelcomeScreen() {
-    soundService.quitAmbientMusic()
-    game.removeVisual(welcomeScreen)
-  }
-  
-  /**
   * Renders the "game won" screen and plays corresponding music.
   */
   method renderGameWonScreen() {
@@ -131,14 +123,6 @@ class ScenarioService {
   }
   
   /**
-  * Removes the "game won" screen and stops the music.
-  */
-  method quitGameWonScreen() {
-    game.removeVisual(wonScreen)
-    soundService.quitWonMusic()
-  }
-  
-  /**
   * Renders the "game lost" screen and plays corresponding music.
   */
   method renderGameLoseScreen() {
@@ -147,14 +131,6 @@ class ScenarioService {
       soundService.playLoseMusic()
       game.addVisual(loseScreen)
     }
-  }
-  
-  /**
-  * Removes the "game lost" screen and stops the music.
-  */
-  method quitGameLoseScreen() {
-    game.removeVisual(loseScreen)
-    soundService.quitLoseMusic()
   }
   
   /**
@@ -237,43 +213,93 @@ class ScenarioService {
   }
   
   /**
-  * Handles movement of logs and collision logic with the frog during game ticks.
-  * Increments points if the frog is on a log and checks for game loss conditions.
-  * 
+  * Handles the movement of logs and checks if the frog is on any log.
+  * If the frog is on a log, it updates the frog's position or triggers a game loss.
   * @param moveFrogTo Function to move the frog to a new position.
-  * @param loseGame Function to invoke if the frog is lost.
-  * @param frog The frog entity involved in the interactions.
+  * @param loseGame Function to handle game loss.
+  * @param frog The frog entity to check against logs.
   */
   method handleMoveLogs(moveFrogTo, loseGame, frog) {
     currentLogsList.forEach(
       { log =>
-        const frogIsOnLog = log.position() == frog.position()
-        const logReset = log.moveAndCheckReset()
+        const isFrogOnLog = self.isFrogOnCurrentLog(log, frog)
         
-        if (!frogIsOnLog) {
-          return
-        }
-
-        if(log.id() != frog.lastLogId()) {
-          stateManager.incrementPoints(log.points())
-        }
-
-        if(log.id() != frog.lastLogId() && log.sound() != null) {
-          soundService.playGenericSound(log.sound(), log.soundTtl())
-        }
-
-        frog.lastLogId(log.id())
-
-        if (logReset || frog.isOutOfBounds(log.speed())) {
-          loseGame.apply()
-          return
-        }
+        const logHaveToResetPosition = log.moveAndCheckReset()
         
-        const newFrogX = frog.nextXPosition(log.speed())
-        const newFrogPos = game.at(newFrogX, frog.position().y())
-
-        return moveFrogTo.apply(newFrogPos)
+        if (isFrogOnLog) {
+          self.incrementPoints(log, frog)
+          self.playLogSound(log, frog)
+          frog.lastLogId(log.id())
+          
+          const nextX = frog.nextXPosition(log.speed())
+          
+          if (logHaveToResetPosition || self.frogWillFall(frog, log)) {
+            loseGame.apply()
+          } else {
+            const newFrogPos = game.at(nextX, frog.position().y())
+            moveFrogTo.apply(newFrogPos)
+          }
+        }
       }
     )
+  }
+  
+  /**
+  * Checks if the frog will fall off the log based on its position.
+  * @param frog The frog entity to check.
+  * @param log The log entity to check against.
+  * @return True if the frog will fall off the log, false otherwise.
+  */
+  method frogWillFall(frog, log) {
+    const frogX = frog.position().x()
+    const frogY = frog.position().y()
+    
+    return (((frogX < log.xStart()) || (frogX > log.xEnd())) || (frogY < log.yStart())) || (frogY > log.yEnd())
+  }
+  
+  /**
+  * Plays the log's sound if it exists and the interaction is new.
+  * @param log The log entity to check for sound.
+  * @param frog The frog entity to check interaction.
+  */
+  method playLogSound(log, frog) {
+    if ((log.sound() != null) && self.isNewLogInteraction(log, frog))
+      soundService.playGenericSound(log.sound(), log.soundTtl())
+  }
+  
+  /**
+  * Increments the player's points if the interaction with the log is new.
+  * @param log The log entity that the frog interacted with.
+  * @param frog The frog entity to check interaction.
+  */
+  method incrementPoints(log, frog) {
+    if (self.isNewLogInteraction(log, frog)) {
+      stateManager.incrementPoints(log.points())
+    }
+  }
+  
+  /**
+  * Checks if the interaction with the log is new based on the frog's last log ID.
+  * @param log The log entity to check.
+  * @param frog The frog entity to check interaction.
+  * @return True if the interaction is new, false otherwise.
+  */
+  method isNewLogInteraction(
+    log,
+    frog
+  ) = (log.id() != frog.lastLogId()) && (frog.lastLogId() != null)
+  
+  /**
+  * Checks if the frog is currently on the specified log.
+  * @param log The log entity to check.
+  * @param frog The frog entity to check against the log.
+  * @return True if the frog is on the log, false otherwise.
+  */
+  method isFrogOnCurrentLog(log, frog) {
+    const frogX = frog.position().x()
+    const frogY = frog.position().y()
+    const logXRange = new Range(start = log.xStart(), end = log.xEnd())
+    const logYRange = new Range(start = log.yStart(), end = log.yEnd())
+    return logXRange.contains(frogX) && logYRange.contains(frogY)
   }
 }
