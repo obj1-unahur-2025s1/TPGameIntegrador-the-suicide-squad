@@ -55,11 +55,11 @@ class StageFactory {
       new LogShort(id = 17, row = constants.scaledRow(6), startX = constants.scaledX(8), speed = 1),
       new LogLong(id = 18, row = constants.scaledRow(6), startX = constants.scaledX(12), speed = 1),
       new LogShort(id = 19, row = constants.scaledRow(6), startX = constants.scaledX(16), speed = 1),
-      new LogLong(id = 20, row = constants.scaledRow(4), startX = constants.scaledX(3), speed = -1),
-      new BonusLog(id = 21, row = constants.scaledRow(4), startX = constants.scaledX(8), speed = -1,
+      new LogLong(id = 20, row = constants.scaledRow(4), startX = constants.scaledX(3), speed = -2),
+      new BonusLog(id = 21, row = constants.scaledRow(4), startX = constants.scaledX(8), speed = -2,
         image = constants.bonusLogDogImage(), sound = constants.bonusLogDogSound(), soundTtl = 7000),
-      new LogLong(id = 22, row = constants.scaledRow(4), startX = constants.scaledX(13), speed = -1),
-      new LogShort(id = 23, row = constants.scaledRow(4), startX = constants.scaledX(18), speed = -1),
+      new LogLong(id = 22, row = constants.scaledRow(4), startX = constants.scaledX(13), speed = -2),
+      new LogShort(id = 23, row = constants.scaledRow(4), startX = constants.scaledX(18), speed = -2),
       new LogLong(id = 24, row = constants.scaledRow(2), startX = constants.scaledX(0), speed = 1),
       new LogLong(id = 25, row = constants.scaledRow(2), startX = constants.scaledX(4), speed = 1),
       new LogShort(id = 26, row = constants.scaledRow(2), startX = constants.scaledX(8), speed = 1),
@@ -76,21 +76,21 @@ class StageFactory {
   method stage3() = new Stage(
     level = 3,
     logList = [
-      new LogLong(id = 29, row = constants.scaledRow(6), startX = constants.scaledX(0), speed = 1),
-      new LogLong(id = 30, row = constants.scaledRow(6), startX = constants.scaledX(4), speed = 1),
-      new LogLong(id = 31, row = constants.scaledRow(6), startX = constants.scaledX(8), speed = 1),
-      new LogLong(id = 32, row = constants.scaledRow(6), startX = constants.scaledX(12), speed = 1),
-      new LogLong(id = 33, row = constants.scaledRow(6), startX = constants.scaledX(16), speed = 1),
+      new LogLong(id = 29, row = constants.scaledRow(6), startX = constants.scaledX(0), speed = 2),
+      new LogLong(id = 30, row = constants.scaledRow(6), startX = constants.scaledX(4), speed = 2),
+      new LogLong(id = 31, row = constants.scaledRow(6), startX = constants.scaledX(8), speed = 2),
+      new LogLong(id = 32, row = constants.scaledRow(6), startX = constants.scaledX(12), speed =2),
+      new LogLong(id = 33, row = constants.scaledRow(6), startX = constants.scaledX(16), speed =2),
       new LogLong(id = 34, row = constants.scaledRow(4), startX = constants.scaledX(3), speed = -1),
       new BonusLog(id = 35, row = constants.scaledRow(4), startX = constants.scaledX(8), speed = -1,
         image = constants.bonusLogCfImage(), sound = constants.bonusLogCfSound(), soundTtl = 6000),
       new LogLong(id = 36, row = constants.scaledRow(4), startX = constants.scaledX(13), speed = -1),
       new LogShort(id = 37, row = constants.scaledRow(4), startX = constants.scaledX(18), speed = -1),
-      new LogShort(id = 38, row = constants.scaledRow(2), startX = constants.scaledX(0), speed = 1),
-      new LogShort(id = 39, row = constants.scaledRow(2), startX = constants.scaledX(4), speed = 1),
-      new LogShort(id = 40, row = constants.scaledRow(2), startX = constants.scaledX(8), speed = 1),
-      new LogShort(id = 41, row = constants.scaledRow(2), startX = constants.scaledX(12), speed = 1),
-      new LogShort(id = 42, row = constants.scaledRow(2), startX = constants.scaledX(16), speed = 1)
+      new LogShort(id = 38, row = constants.scaledRow(2), startX = constants.scaledX(0), speed = 2),
+      new LogShort(id = 39, row = constants.scaledRow(2), startX = constants.scaledX(4), speed = 2),
+      new LogShort(id = 40, row = constants.scaledRow(2), startX = constants.scaledX(8), speed = 2),
+      new LogShort(id = 41, row = constants.scaledRow(2), startX = constants.scaledX(12), speed = 2),
+      new LogShort(id = 42, row = constants.scaledRow(2), startX = constants.scaledX(16), speed = 2)
     ]
   )
 }

@@ -62,7 +62,7 @@ object constants {
 
   // === Timers and Tick Intervals (in ms) ===
   const property checkFrogTickInterval = 150 
-  const property moveLogsTickInterval = 80 
+  const property moveLogsTickInterval = 40
   const property waterFallTtl = 4000
   const property nextLevelTtl = 1500
   const property croackTtl = 1500
