@@ -3,7 +3,7 @@
 * Holds constant configuration values and resources used throughout the game,
 * such as game dimensions, asset filenames, sound files, and messages.
 */
-object constants {
+  object constants {
   // === Game Behavior Settings ===
   const property alwaysWin = false
   const property white = "ffffffff"
@@ -38,6 +38,8 @@ object constants {
   const property baseLifeCounterX = baseGameWidth - 2.5 
   const property baseHudY = baseGameHeight - 1      
   const property basePointsCounterY = baseGameHeight - 0.6
+  const property baseFinalPointsX = 10
+  const property baseFinalPointsY =  0.7
 
   // === HUD Scaled Positions (in grid units after applying scaleFactor) ===
   const property levelCounterX = baseLevelCounterX * scaleFactor
@@ -45,6 +47,8 @@ object constants {
   const property lifeCounterX = baseLifeCounterX * scaleFactor
   const property hudY = baseHudY * scaleFactor
   const property pointsCounterY = basePointsCounterY * scaleFactor
+  const property finalPointsCounterX = baseFinalPointsX * scaleFactor
+  const property finalPointsCounterY = baseFinalPointsY * scaleFactor
 
   // === Audio Resources ===
   const property riverSound = "river-sound.mp3"

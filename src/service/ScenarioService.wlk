@@ -35,6 +35,11 @@ class ScenarioService {
     text = { "Puntos: " + stateManager.points() }
   )
 
+  const finalPointsCounter = new UiText(
+    position = game.at(constants.finalPointsCounterX(), constants.finalPointsCounterY()),
+    text = { "Puntaje Final: " + stateManager.points() }
+  )
+
   const welcomeScreen = new UiScreen(image = constants.welcomeScreen())
   const pauseScreen = new UiScreen(image = constants.pauseScreen())
   const wonScreen = new UiScreen(image = constants.wonScreen())
@@ -82,6 +87,10 @@ class ScenarioService {
   method renderPointsCounter() {
     game.addVisual(pointsCounter)
   }
+
+  method renderFinalPointsCounter(){
+    game.addVisual(finalPointsCounter)
+  }
   
   /**
   * Displays the pause screen and pauses background audio.
@@ -119,6 +128,7 @@ class ScenarioService {
       soundService.pauseRiverSound()
       soundService.playWonMusic()
       game.addVisual(wonScreen)
+      self.renderFinalPointsCounter()
     }
   }
   
@@ -130,6 +140,7 @@ class ScenarioService {
       soundService.pauseRiverSound()
       soundService.playLoseMusic()
       game.addVisual(loseScreen)
+      self.renderFinalPointsCounter()
     }
   }
   
