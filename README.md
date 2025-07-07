@@ -2,7 +2,7 @@
 
 ## 👨‍💻 Equipo de desarrollo
 
-- Diego
+- Diego Contreras
 - Thomas Barenghi
 
 ## 📸 Capturas
